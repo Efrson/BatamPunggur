@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daerah Telepon Sidang Batam Punggur</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4F46E5; 
+            --bg: #F8FAFC; 
+            --card-bg: #FFFFFF;
+            --text-main: #0F172A;
+            --text-muted: #64748B;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 480px; 
+            padding: 40px 20px;
+        }
+
+        .header {
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            line-height: 1.3;
+            background: linear-gradient(135deg, #4F46E5, #0EA5E9);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 15px;
+            color: var(--text-muted);
+        }
+
+        .menu-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* Gaya Kartu Tombol yang Baru (Teks di Tengah) */
+        .kdl-card {
+            display: flex;
+            align-items: center;
+            justify-content: center; /* Memposisikan teks ke tengah */
+            background-color: var(--card-bg);
+            padding: 22px 20px; /* Padding sedikit diperbesar */
+            border-radius: 16px;
+            text-decoration: none;
+            color: var(--text-main);
+            font-weight: 600;
+            font-size: 18px; /* Ukuran font lebih besar */
+            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.04);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border: 1px solid rgba(226, 232, 240, 0.6);
+            text-align: center;
+        }
+
+        .kdl-card:active {
+            transform: scale(0.96);
+            background-color: #F1F5F9;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <div class="header">
+            <h1>Daerah Telepon Sidang<br>Batam Punggur</h1>
+            <p>Pilih wilayah KDL untuk mulai menelepon</p>
+        </div>
+
+        <div class="menu-list">
+            <!-- Ubah href menjadi pesona-asri.html -->
+            <a href="pesona-asri.html" class="kdl-card">Pesona Asri</a>
+            <a href="nongsa.html" class="kdl-card">Nongsa</a>
+            <a href="punggur.html" class="kdl-card">Punggur</a>
+            <a href="simpang-raya.html" class="kdl-card">Simpang Raya</a>
+        </div>
+    </div>
+
+</body>
+</html>

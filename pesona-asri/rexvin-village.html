@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Kontak - Rexvin Village</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4F46E5; 
+            --bg: #F8FAFC; 
+            --card-bg: #FFFFFF;
+            --text-main: #0F172A;
+            --text-muted: #64748B;
+            --border: #E2E8F0;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 480px; 
+            padding: 30px 20px;
+        }
+
+        .back-button {
+            display: inline-block;
+            text-decoration: none;
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .header { margin-bottom: 20px; }
+        .header h1 { font-size: 22px; font-weight: 700; }
+        .header p { font-size: 14px; color: var(--text-muted); }
+
+        .contact-card {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
+        }
+
+        .card-header h2 { font-size: 18px; color: var(--text-main); margin-bottom: 5px; }
+        .badge-lokasi {
+            display: inline-block;
+            background-color: #EEF2FF;
+            color: var(--primary);
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+        }
+        .address { font-size: 13px; color: var(--text-muted); line-height: 1.4; margin-bottom: 15px; }
+
+        .phone-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #EEF2FF;
+            padding: 12px 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+        .phone-number { font-weight: 700; font-size: 16px; color: var(--primary); }
+        .btn-copy {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .btn-copy:active { background-color: #3730A3; transform: scale(0.95); }
+
+        .old-notes {
+            background-color: #F1F5F9;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #475569;
+            margin-bottom: 15px;
+            border-left: 4px solid #94A3B8;
+        }
+        .old-notes strong { color: #334155; }
+
+        hr { border: 0; height: 1px; background: var(--border); margin: 20px 0; }
+
+        .input-group { margin-bottom: 15px; }
+        .input-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: var(--text-main);
+        }
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            font-family: inherit;
+            font-size: 14px;
+            background-color: #F8FAFC;
+        }
+        .form-control:focus { outline: none; border-color: var(--primary); }
+
+        .btn-save {
+            width: 100%;
+            background-color: #10B981;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .btn-save:active { background-color: #059669; transform: scale(0.98); }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <a href="../pesona-asri.html" class="back-button">← Kembali</a>
+
+        <div class="header">
+            <h1>Lokasi: Rexvin Village</h1>
+            <p>Daftar kontak wilayah Rexvin Village</p>
+        </div>
+
+        <div id="kontak-container"></div>
+    </div>
+
+    <script>
+        const URL_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycbzsmW2vBpWAkvdUfH8DHZzeu3JWys044M5BPOj1pJ4ZgA-Ur-bQpR08T7sOCk198Xgb/exec";
+
+        async function muatData() {
+            const container = document.getElementById('kontak-container');
+            container.innerHTML = "<p style='text-align:center;'>⏳ Mengambil data terbaru...</p>";
+
+            try {
+                let response = await fetch(URL_APPS_SCRIPT);
+                let data = await response.json();
+                
+                let master = data.master; 
+                let laporan = data.laporan; 
+
+                container.innerHTML = ""; 
+
+                for (let i = 1; i < master.length; i++) {
+                    let lokasi = master[i][1]; 
+                    let nama = master[i][2];   
+                    let alamat = master[i][3]; 
+                    let hp = master[i][4];     
+                    let kodeLama = master[i][5]; 
+                    let ketLama = master[i][6];  
+
+                    if (!nama) continue;
+
+                    // Filter khusus untuk wilayah Rexvin Village
+                    if (!lokasi || !lokasi.toLowerCase().includes('rexvin')) continue;
+
+                    let statusTerakhir = "";
+                    let tglTerakhir = "";
+                    let ketTerakhir = "";
+                    
+                    for (let j = 1; j < laporan.length; j++) {
+                        if (laporan[j][2] === nama) { 
+                            tglTerakhir = laporan[j][3];
+                            statusTerakhir = laporan[j][4];
+                            ketTerakhir = laporan[j][5];
+                        }
+                    }
+
+                    const card = document.createElement('div');
+                    card.className = 'contact-card';
+                    
+                    if(statusTerakhir) {
+                        card.style.borderColor = "#10B981";
+                        card.style.backgroundColor = "#F0FDF4";
+                    }
+
+                    card.innerHTML = `
+                        <div class="card-header">
+                            <span class="badge-lokasi">${lokasi}</span>
+                            <h2>${nama}</h2>
+                            <p class="address">📍 ${alamat}</p>
+                        </div>
+                        
+                        <div class="phone-box">
+                            <span class="phone-number">📞 ${hp}</span>
+                            <button class="btn-copy" onclick="copyNomor('${hp}')">Salin</button>
+                        </div>
+
+                        <div class="old-notes">
+                            <strong>Status / Catatan Terakhir:</strong><br>
+                            ${statusTerakhir ? `<b>[${statusTerakhir}]</b> ${ketTerakhir} <br><small>(${tglTerakhir})</small>` : `<em>[${kodeLama}] ${ketLama} (Belum ada update baru)</em>`}
+                        </div>
+
+                        <hr>
+
+                        <div class="input-section">
+                            <div class="input-group">
+                                <label>Tanggal Kunjungan</label>
+                                <input type="date" class="form-control" id="tanggal-${i}" value="${tglTerakhir}">
+                            </div>
+                            
+                            <div class="input-group">
+                                <label>Kode Baru</label>
+                                <select class="form-control" id="kode-${i}">
+                                    <option value="">-- Pilih Kode --</option>
+                                    <option value="TM" ${statusTerakhir === 'TM' ? 'selected' : ''}>TM - Tidak masuk</option>
+                                    <option value="TA" ${statusTerakhir === 'TA' ? 'selected' : ''}>TA - Tidak angkat</option>
+                                    <option value="BB" ${statusTerakhir === 'BB' ? 'selected' : ''}>BB - Bisa bicara</option>
+                                    <option value="TS" ${statusTerakhir === 'TS' ? 'selected' : ''}>TS - Tulis surat</option>
+                                </select>
+                            </div>
+
+                            <div class="input-group">
+                                <label>Keterangan Baru</label>
+                                <textarea class="form-control" rows="2" id="ket-${i}" placeholder="Ketik hasil panggilan...">${ketTerakhir}</textarea>
+                            </div>
+
+                            <button class="btn-save" onclick="simpanData(${i}, '${nama}', '${lokasi}')">Simpan / Update Data</button>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                }
+            } catch (error) {
+                container.innerHTML = "<p style='text-align:center; color:red;'>Gagal memuat data. Periksa koneksi atau URL Apps Script.</p>";
+            }
+        }
+
+        function copyNomor(nomor) {
+            navigator.clipboard.writeText(nomor).then(() => {
+                alert("Nomor " + nomor + " disalin!");
+            });
+        }
+
+        async function simpanData(index, nama, lokasi) {
+            const tanggal = document.getElementById('tanggal-' + index).value;
+            const kode = document.getElementById('kode-' + index).value;
+            const ket = document.getElementById('ket-' + index).value;
+            
+            if(!tanggal || !kode) {
+                alert("Mohon isi Tanggal dan Kode!");
+                return;
+            }
+
+            alert("Mengirim data...");
+
+            const formData = new URLSearchParams();
+            formData.append('wilayah', 'Pesona Asri - ' + lokasi);
+            formData.append('nama', nama);
+            formData.append('tanggal', tanggal);
+            formData.append('kode', kode);
+            formData.append('keterangan', ket);
+
+            await fetch(URL_APPS_SCRIPT, {
+                method: 'POST',
+                body: formData
+            });
+
+            alert("Data berhasil disimpan! Halaman akan dimuat ulang.");
+            muatData(); 
+        }
+
+        muatData();
+    </script>
+</body>
+</html>
