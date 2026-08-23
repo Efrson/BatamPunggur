@@ -78,16 +78,46 @@
         }
         .btn-copy:active { background-color: #3730A3; transform: scale(0.95); }
 
-        .old-notes {
-            background-color: #F1F5F9;
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 13px;
-            color: #475569;
+        /* DESAIN BARU UNTUK KOTAK RIWAYAT (HISTORY) */
+        .history-box {
+            background-color: #F8FAFC;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
             margin-bottom: 15px;
-            border-left: 4px solid #94A3B8;
         }
-        .old-notes strong { color: #334155; }
+        .history-box strong {
+            display: block;
+            font-size: 14px;
+            color: var(--text-main);
+            margin-bottom: 10px;
+        }
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .history-item {
+            background-color: #ffffff;
+            border-left: 4px solid #10B981; /* Warna hijau untuk update baru */
+            padding: 10px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            color: #334155;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        .history-item.old {
+            border-left-color: #94A3B8; /* Warna abu-abu untuk data 2020 */
+            background-color: #F1F5F9;
+            box-shadow: none;
+        }
+        .history-date {
+            display: block;
+            font-size: 11px;
+            color: #64748B;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
 
         hr { border: 0; height: 1px; background: var(--border); margin: 20px 0; }
 
@@ -135,7 +165,6 @@
             <p>Daftar kontak Perumahan KDA</p>
         </div>
 
-        <!-- Wadah tempat kartu kontak dimuat secara otomatis -->
         <div id="kontak-container"></div>
     </div>
 
@@ -156,6 +185,7 @@
                 container.innerHTML = ""; 
 
                 for (let i = 1; i < master.length; i++) {
+                    let lokasi = master[i][1];
                     let nama = master[i][2]; 
                     let alamat = master[i][3];
                     let hp = master[i][4];
@@ -163,23 +193,47 @@
                     let ketLama = master[i][6];
 
                     if (!nama) continue;
+                    // Filter untuk file ini (KDA)
+                    if (!lokasi || !lokasi.toLowerCase().includes('kda')) continue;
 
-                    let statusTerakhir = "";
-                    let tglTerakhir = "";
-                    let ketTerakhir = "";
+                    // MENGUMPULKAN RIWAYAT
+                    let adaUpdateBaru = false;
                     
+                    // 1. Catatan dasar (2020-2022) akan selalu ada di paling atas
+                    let historiHTML = `
+                        <div class="history-item old">
+                            <span class="history-date">Data Lama (2020-2022)</span>
+                            <b>[${kodeLama || '-'}]</b> ${ketLama || 'Tidak ada catatan lama'}
+                        </div>
+                    `;
+
+                    // 2. Loop untuk mencari SEMUA laporan baru yang cocok dengan nama kontak ini
                     for (let j = 1; j < laporan.length; j++) {
                         if (laporan[j][2] === nama) { 
-                            tglTerakhir = laporan[j][3];
-                            statusTerakhir = laporan[j][4];
-                            ketTerakhir = laporan[j][5];
+                            adaUpdateBaru = true;
+                            
+                            let rawTgl = laporan[j][3];
+                            // Memastikan format tanggal bersih (membuang jam/T jika ada dari Google Sheets)
+                            let tgl = rawTgl ? rawTgl.toString().split('T')[0] : "-"; 
+                            let status = laporan[j][4];
+                            let ket = laporan[j][5];
+
+                            // Menambahkan kotak riwayat baru di bawahnya secara bertumpuk
+                            historiHTML += `
+                                <div class="history-item">
+                                    <span class="history-date">Update: ${tgl}</span>
+                                    <b>[${status}]</b> ${ket}
+                                </div>
+                            `;
                         }
                     }
 
+                    // Buat Tampilan Kartu
                     const card = document.createElement('div');
                     card.className = 'contact-card';
                     
-                    if(statusTerakhir) {
+                    // Jika pernah ditelepon baru-baru ini, ubah warna bingkainya
+                    if(adaUpdateBaru) {
                         card.style.borderColor = "#10B981";
                         card.style.backgroundColor = "#F0FDF4";
                     }
@@ -195,36 +249,40 @@
                             <button class="btn-copy" onclick="copyNomor('${hp}')">Salin</button>
                         </div>
 
-                        <div class="old-notes">
-                            <strong>Status / Catatan Terakhir:</strong><br>
-                            ${statusTerakhir ? `<b>[${statusTerakhir}]</b> ${ketTerakhir} <br><small>(${tglTerakhir})</small>` : `<em>[${kodeLama}] ${ketLama} (Belum ada update baru)</em>`}
+                        <!-- KOTAK RIWAYAT BARU -->
+                        <div class="history-box">
+                            <strong>Riwayat Status / Catatan:</strong>
+                            <div class="history-list">
+                                ${historiHTML}
+                            </div>
                         </div>
 
                         <hr>
 
                         <div class="input-section">
                             <div class="input-group">
-                                <label>Tanggal Kunjungan</label>
-                                <input type="date" class="form-control" id="tanggal-${i}" value="${tglTerakhir}">
+                                <label>Tanggal Kunjungan (Input Baru)</label>
+                                <!-- Form dikosongkan agar siap untuk inputan panggilan ke-2, ke-3, dst -->
+                                <input type="date" class="form-control" id="tanggal-${i}" value="">
                             </div>
                             
                             <div class="input-group">
                                 <label>Kode Baru</label>
                                 <select class="form-control" id="kode-${i}">
                                     <option value="">-- Pilih Kode --</option>
-                                    <option value="TM" ${statusTerakhir === 'TM' ? 'selected' : ''}>TM - Tidak masuk</option>
-                                    <option value="TA" ${statusTerakhir === 'TA' ? 'selected' : ''}>TA - Tidak angkat</option>
-                                    <option value="BB" ${statusTerakhir === 'BB' ? 'selected' : ''}>BB - Bisa bicara</option>
-                                    <option value="TS" ${statusTerakhir === 'TS' ? 'selected' : ''}>TS - Tulis surat</option>
+                                    <option value="TM">TM - Tidak masuk</option>
+                                    <option value="TA">TA - Tidak angkat</option>
+                                    <option value="BB">BB - Bisa bicara</option>
+                                    <option value="TS">TS - Tulis surat</option>
                                 </select>
                             </div>
 
                             <div class="input-group">
                                 <label>Keterangan Baru</label>
-                                <textarea class="form-control" rows="2" id="ket-${i}" placeholder="Ketik hasil panggilan...">${ketTerakhir}</textarea>
+                                <textarea class="form-control" rows="2" id="ket-${i}" placeholder="Ketik hasil panggilan..."></textarea>
                             </div>
 
-                            <button class="btn-save" onclick="simpanData(${i}, '${nama}')">Simpan / Update Data</button>
+                            <button class="btn-save" onclick="simpanData(${i}, '${nama}', 'KDA')">Simpan / Tambah Data Baru</button>
                         </div>
                     `;
                     container.appendChild(card);
@@ -240,7 +298,7 @@
             });
         }
 
-        async function simpanData(index, nama) {
+        async function simpanData(index, nama, lokasi) {
             const tanggal = document.getElementById('tanggal-' + index).value;
             const kode = document.getElementById('kode-' + index).value;
             const ket = document.getElementById('ket-' + index).value;
@@ -250,10 +308,10 @@
                 return;
             }
 
-            alert("Mengirim data...");
+            alert("Mengirim data... Mohon tunggu sebentar.");
 
             const formData = new URLSearchParams();
-            formData.append('wilayah', 'Pesona Asri - KDA');
+            formData.append('wilayah', 'Pesona Asri - ' + lokasi); // Sesuaikan wilayah
             formData.append('nama', nama);
             formData.append('tanggal', tanggal);
             formData.append('kode', kode);
@@ -264,10 +322,11 @@
                 body: formData
             });
 
-            alert("Data berhasil disimpan! Halaman akan dimuat ulang.");
-            muatData(); 
+            alert("Data berhasil ditambahkan ke riwayat!");
+            muatData(); // Memuat ulang data agar update terbaru langsung muncul di bawah riwayat
         }
 
+        // Jalankan saat pertama kali dibuka
         muatData();
     </script>
 </body>
