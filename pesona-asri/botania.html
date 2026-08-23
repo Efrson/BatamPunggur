@@ -133,6 +133,14 @@
             margin-top: 10px;
         }
         .btn-save:active { background-color: #059669; transform: scale(0.98); }
+
+        /* --- DESAIN KOTAK RIWAYAT --- */
+        .history-box { background-color: #F8FAFC; padding: 15px; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 15px; }
+        .history-box strong { display: block; font-size: 14px; color: var(--text-main); margin-bottom: 10px; }
+        .history-list { display: flex; flex-direction: column; gap: 8px; }
+        .history-item { background-color: #ffffff; border-left: 4px solid #10B981; padding: 10px 12px; border-radius: 6px; font-size: 13px; color: #334155; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        .history-item.old { border-left-color: #94A3B8; background-color: #F1F5F9; box-shadow: none; }
+        .history-date { display: block; font-size: 11px; color: #64748B; font-weight: 700; margin-bottom: 4px; }
     </style>
 </head>
 <body>
@@ -148,7 +156,13 @@
         <div id="kontak-container"></div>
     </div>
 
-    <script>
+        <script>
+        // =========================================================================
+        // HANYA UBAH 2 BARIS INI SESUAIAIKAN DENGAN NAMA FILE/PERUMAHANNYA:
+        const KATA_KUNCI_FILTER = "botania"; // Contoh ganti: "taras", "rexvin", "jasinta"
+        const NAMA_WILAYAH_SIMPAN = "Pesona Asri - Botania"; // Untuk laporan ke Google Sheets
+        // =========================================================================
+
         const URL_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycbzsmW2vBpWAkvdUfH8DHZzeu3JWys044M5BPOj1pJ4ZgA-Ur-bQpR08T7sOCk198Xgb/exec";
 
         async function muatData() {
@@ -158,41 +172,53 @@
             try {
                 let response = await fetch(URL_APPS_SCRIPT);
                 let data = await response.json();
-                
                 let master = data.master; 
                 let laporan = data.laporan; 
 
                 container.innerHTML = ""; 
 
                 for (let i = 1; i < master.length; i++) {
-                    let lokasi = master[i][1]; // Kolom Lokasi
-                    let nama = master[i][2];   // Kolom Nama
-                    let alamat = master[i][3]; // Kolom Alamat
-                    let hp = master[i][4];     // Kolom No. Hp
-                    let kodeLama = master[i][5]; // Kolom Kode Lama
-                    let ketLama = master[i][6];  // Kolom Keterangan Lama
+                    let lokasi = master[i][1];
+                    let nama = master[i][2]; 
+                    let alamat = master[i][3];
+                    let hp = master[i][4];
+                    let kodeLama = master[i][5];
+                    let ketLama = master[i][6];
 
                     if (!nama) continue;
-
-                    // Filter hanya untuk lokasi yang mengandung kata "Botania" (BotaniaA atau BotaniaB)
-                    if (!lokasi || !lokasi.toLowerCase().includes('botania')) continue;
-
-                    let statusTerakhir = "";
-                    let tglTerakhir = "";
-                    let ketTerakhir = "";
                     
+                    // Filter pintar berdasarkan KATA_KUNCI_FILTER di atas
+                    if (!lokasi || !lokasi.toLowerCase().includes(KATA_KUNCI_FILTER)) continue;
+
+                    let adaUpdateBaru = false;
+                    let historiHTML = `
+                        <div class="history-item old">
+                            <span class="history-date">Data Lama (2020-2022)</span>
+                            <b>[${kodeLama || '-'}]</b> ${ketLama || 'Tidak ada catatan lama'}
+                        </div>
+                    `;
+
                     for (let j = 1; j < laporan.length; j++) {
                         if (laporan[j][2] === nama) { 
-                            tglTerakhir = laporan[j][3];
-                            statusTerakhir = laporan[j][4];
-                            ketTerakhir = laporan[j][5];
+                            adaUpdateBaru = true;
+                            let rawTgl = laporan[j][3];
+                            let tgl = rawTgl ? rawTgl.toString().split('T')[0] : "-"; 
+                            let status = laporan[j][4];
+                            let ket = laporan[j][5];
+
+                            historiHTML += `
+                                <div class="history-item">
+                                    <span class="history-date">Update: ${tgl}</span>
+                                    <b>[${status}]</b> ${ket}
+                                </div>
+                            `;
                         }
                     }
 
                     const card = document.createElement('div');
                     card.className = 'contact-card';
                     
-                    if(statusTerakhir) {
+                    if(adaUpdateBaru) {
                         card.style.borderColor = "#10B981";
                         card.style.backgroundColor = "#F0FDF4";
                     }
@@ -209,36 +235,38 @@
                             <button class="btn-copy" onclick="copyNomor('${hp}')">Salin</button>
                         </div>
 
-                        <div class="old-notes">
-                            <strong>Status / Catatan Terakhir:</strong><br>
-                            ${statusTerakhir ? `<b>[${statusTerakhir}]</b> ${ketTerakhir} <br><small>(${tglTerakhir})</small>` : `<em>[${kodeLama}] ${ketLama} (Belum ada update baru)</em>`}
+                        <div class="history-box">
+                            <strong>Riwayat Status / Catatan:</strong>
+                            <div class="history-list">
+                                ${historiHTML}
+                            </div>
                         </div>
 
                         <hr>
 
                         <div class="input-section">
                             <div class="input-group">
-                                <label>Tanggal Kunjungan</label>
-                                <input type="date" class="form-control" id="tanggal-${i}" value="${tglTerakhir}">
+                                <label>Tanggal Kunjungan (Input Baru)</label>
+                                <input type="date" class="form-control" id="tanggal-${i}" value="">
                             </div>
                             
                             <div class="input-group">
                                 <label>Kode Baru</label>
                                 <select class="form-control" id="kode-${i}">
                                     <option value="">-- Pilih Kode --</option>
-                                    <option value="TM" ${statusTerakhir === 'TM' ? 'selected' : ''}>TM - Tidak masuk</option>
-                                    <option value="TA" ${statusTerakhir === 'TA' ? 'selected' : ''}>TA - Tidak angkat</option>
-                                    <option value="BB" ${statusTerakhir === 'BB' ? 'selected' : ''}>BB - Bisa bicara</option>
-                                    <option value="TS" ${statusTerakhir === 'TS' ? 'selected' : ''}>TS - Tulis surat</option>
+                                    <option value="TM">TM - Tidak masuk</option>
+                                    <option value="TA">TA - Tidak angkat</option>
+                                    <option value="BB">BB - Bisa bicara</option>
+                                    <option value="TS">TS - Tulis surat</option>
                                 </select>
                             </div>
 
                             <div class="input-group">
                                 <label>Keterangan Baru</label>
-                                <textarea class="form-control" rows="2" id="ket-${i}" placeholder="Ketik hasil panggilan...">${ketTerakhir}</textarea>
+                                <textarea class="form-control" rows="2" id="ket-${i}" placeholder="Ketik hasil panggilan..."></textarea>
                             </div>
 
-                            <button class="btn-save" onclick="simpanData(${i}, '${nama}', '${lokasi}')">Simpan / Update Data</button>
+                            <button class="btn-save" onclick="simpanData(${i}, '${nama}')">Simpan / Tambah Data Baru</button>
                         </div>
                     `;
                     container.appendChild(card);
@@ -249,36 +277,26 @@
         }
 
         function copyNomor(nomor) {
-            navigator.clipboard.writeText(nomor).then(() => {
-                alert("Nomor " + nomor + " disalin!");
-            });
+            navigator.clipboard.writeText(nomor).then(() => { alert("Nomor " + nomor + " disalin!"); });
         }
 
-        async function simpanData(index, nama, lokasi) {
+        async function simpanData(index, nama) {
             const tanggal = document.getElementById('tanggal-' + index).value;
             const kode = document.getElementById('kode-' + index).value;
             const ket = document.getElementById('ket-' + index).value;
             
-            if(!tanggal || !kode) {
-                alert("Mohon isi Tanggal dan Kode!");
-                return;
-            }
-
-            alert("Mengirim data...");
+            if(!tanggal || !kode) { alert("Mohon isi Tanggal dan Kode!"); return; }
+            alert("Mengirim data... Mohon tunggu sebentar.");
 
             const formData = new URLSearchParams();
-            formData.append('wilayah', 'Pesona Asri - ' + lokasi);
+            formData.append('wilayah', NAMA_WILAYAH_SIMPAN); 
             formData.append('nama', nama);
             formData.append('tanggal', tanggal);
             formData.append('kode', kode);
             formData.append('keterangan', ket);
 
-            await fetch(URL_APPS_SCRIPT, {
-                method: 'POST',
-                body: formData
-            });
-
-            alert("Data berhasil disimpan! Halaman akan dimuat ulang.");
+            await fetch(URL_APPS_SCRIPT, { method: 'POST', body: formData });
+            alert("Data berhasil ditambahkan ke riwayat!");
             muatData(); 
         }
 
