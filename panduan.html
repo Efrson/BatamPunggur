@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panduan Penggunaan</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary: #4F46E5; --bg: #F8FAFC; --card-bg: #FFFFFF; --text-main: #0F172A; --text-muted: #64748B; --border: #E2E8F0; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg); color: var(--text-main); display: flex; justify-content: center; min-height: 100vh; }
+        .app-container { width: 100%; max-width: 480px; padding: 30px 20px; }
+        .back-button { display: inline-block; text-decoration: none; color: var(--primary); font-weight: 600; font-size: 16px; margin-bottom: 20px; }
+        
+        .card-panduan { 
+            background-color: var(--card-bg); 
+            border-radius: 16px; 
+            padding: 25px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
+            border: 1px solid var(--border); 
+        }
+        .card-panduan h1 { 
+            font-size: 20px; 
+            color: var(--text-main); 
+            margin-bottom: 15px; 
+        }
+        .card-panduan p { 
+            font-size: 15px; 
+            color: #334155; 
+            line-height: 1.7; 
+            text-align: justify; 
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- Tombol Kembali -->
+        <a href="javascript:history.back()" class="back-button">← Kembali</a>
+
+        <!-- Kotak Teks Panduan -->
+        <div class="card-panduan">
+            <h1>Panduan Penggunaan</h1>
+            <p>
+                Web ini dibuat sebagai kartu daerah digital untuk sidang Batam Punggur. Saudara-saudari dapat memilih KDL atau Perumahan, dan mulai menelepon. Setelah menelepon, sangat diharapkan untuk langsung menulis laporan agar memudahkan kunjungan berikutnya.
+            </p>
+        </div>
+    </div>
+
+</body>
+</html>
