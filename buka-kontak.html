@@ -187,7 +187,7 @@
 
         async function muatData() {
             const container = document.getElementById('kontak-container');
-            container.innerHTML = "<p style='text-align:center;'>⏳ Mengambil data terbaru...</p>";
+            container.innerHTML = "<p style='text-align:center;'>⏳ Harap Tunggu...</p>";
 
             try {
                 let response = await fetch(URL_APPS_SCRIPT + "?grup=" + encodeURIComponent(namaGrup));
