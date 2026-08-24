@@ -129,7 +129,6 @@
 
         function bukaModal() { 
             document.getElementById('modalBaru').style.display = 'flex'; 
-            // Otomatis isi kolom petugas jika sebelumnya sudah pernah input nama di HP ini
             let savedName = localStorage.getItem("namaPetugas");
             if(savedName) {
                 document.getElementById('new-petugas').value = savedName;
@@ -147,7 +146,6 @@
                 alert("Mohon isi Nama dan Nomor HP!"); return;
             }
 
-            // Validasi Nama Petugas (Prioritaskan input modal, jika kosong ambil dari memori HP)
             let petugasFinal = inputPetugas || localStorage.getItem("namaPetugas") || "Anonim";
             localStorage.setItem("namaPetugas", petugasFinal);
 
@@ -174,7 +172,17 @@
             formData.append('alamat', alamat);
 
             try {
-                await fetch(URL_APPS_SCRIPT, { method: 'POST', body: formData });
+                let response = await fetch(URL_APPS_SCRIPT, { method: 'POST', body: formData });
+                let resData = await response.json();
+
+                if (resData.status === "blocked") {
+                    alert("🚫 " + resData.message);
+                    btn.innerText = "Simpan Kontak Baru";
+                    btn.disabled = false;
+                    btn.style.backgroundColor = "#10B981";
+                    return;
+                }
+
                 alert("Kontak baru berhasil disimpan!");
                 location.reload(); 
             } catch(e) {
@@ -189,9 +197,21 @@
             const container = document.getElementById('kontak-container');
             container.innerHTML = "<p style='text-align:center;'>⏳ Harap Tunggu...</p>";
 
+            if(!localStorage.getItem("deviceId")) {
+                let uniqueId = 'dev_' + Math.random().toString(36).substring(2, 10) + Date.now().toString(36);
+                localStorage.setItem("deviceId", uniqueId);
+            }
+            const idPerangkat = localStorage.getItem("deviceId");
+
             try {
-                let response = await fetch(URL_APPS_SCRIPT + "?grup=" + encodeURIComponent(namaGrup));
+                let response = await fetch(URL_APPS_SCRIPT + "?grup=" + encodeURIComponent(namaGrup) + "&deviceId=" + encodeURIComponent(idPerangkat));
                 let data = await response.json();
+
+                // Pengecekan status blokir
+                if (data.status === "blocked") {
+                    container.innerHTML = "<div style='text-align:center; padding:40px;'><h3 style='color:#EF4444; font-size:20px;'>🚫 Akses Ditolak</h3><p style='color:#64748B; margin-top:8px;'>Perangkat Anda tidak memiliki izin untuk mengakses data ini.</p></div>";
+                    return;
+                }
                 
                 let master = data.master; 
                 let kontakBaru = data.kontakBaru;
@@ -239,7 +259,7 @@
                                 alamat: rowAlamat || "-",
                                 hp: rowHp,
                                 kodeLama: "-",
-                                ketLama: `Dibuat manual tgl ${rowTimestamp} oleh ${rowPetugas}`, // Tanggal pembuatan tampil di sini
+                                ketLama: `Dibuat manual tgl ${rowTimestamp} oleh ${rowPetugas}`,
                                 isBaru: true,
                                 origIndex: "baru_" + k
                             });
@@ -266,7 +286,7 @@
                     let historiHTML = `
                         <div class="history-item old">
                             <span class="history-date">${item.isBaru ? 'Informasi Kontak Baru' : 'Data Lama (2020-2022)'}</span>
-                            <b>[${item.isBaru ? 'BARU' : (kodeLama || '-')}]</b> ${ketLama}
+                            <b>[${item.isBaru ? '-' : (kodeLama || '-')}]</b> ${ketLama}
                         </div>
                     `;
 
@@ -393,7 +413,17 @@
             formData.append('keterangan', ket);
 
             try {
-                await fetch(URL_APPS_SCRIPT, { method: 'POST', body: formData });
+                let response = await fetch(URL_APPS_SCRIPT, { method: 'POST', body: formData });
+                let resData = await response.json();
+
+                if (resData.status === "blocked") {
+                    alert("🚫 " + resData.message);
+                    tombolSimpan.innerText = teksAsli;
+                    tombolSimpan.disabled = false;
+                    tombolSimpan.style.backgroundColor = "#10B981";
+                    return;
+                }
+
                 alert("Data berhasil ditambahkan ke riwayat!");
                 muatData(); 
             } catch (error) {
