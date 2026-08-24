@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lokasi - Punggur</title>
+    <title>Lokasi - Pesona Asri</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -35,6 +35,7 @@
             padding: 40px 20px;
         }
 
+        /* Tombol Kembali */
         .back-button {
             display: inline-block;
             text-decoration: none;
@@ -65,7 +66,7 @@
         .menu-list {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 12px; /* Jarak sedikit dirapatkan karena daftarnya lebih banyak */
         }
 
         .location-card {
@@ -74,7 +75,7 @@
             justify-content: center;
             background-color: var(--card-bg);
             padding: 18px 20px;
-            border-radius: 12px;
+            border-radius: 12px; /* Lengkungan sedikit dikurangi */
             text-decoration: none;
             color: var(--text-main);
             font-weight: 600;
@@ -94,18 +95,24 @@
 <body>
 
     <div class="app-container">
+        <!-- Tombol untuk kembali ke menu utama -->
         <a href="index.html" class="back-button">← Kembali</a>
 
         <div class="header">
-            <h1>Punggur</h1>
-            <p>Pilih perumahan / lokasi yang ingin dihubungi</p>
+            <h1>Pesona Asri</h1>
+            <p>Pilih perumahan yang ingin dihubungi</p>
         </div>
 
         <div class="menu-list">
-            <a href="buka-kontak.html?lokasi=jasinta&judul=Jasinta&grup=Punggur" class="location-card">Jasinta</a>
-            <a href="buka-kontak.html?lokasi=punggur&judul=Punggur 1&grup=Punggur" class="location-card">Punggur</a>
-            <a href="buka-kontak.html?lokasi=bida kabil&judul=Bida Kabil&grup=Punggur" class="location-card">Bida Kabil</a>
-            <a href="buka-kontak.html?lokasi=punggur 2&judul=Punggur 2&grup=Punggur" class="location-card">Punggur 2</a>
+            <a href="buka-kontak.html?lokasi=kda&judul=KDA&grup=Pesona Asri" class="location-card">KDA</a>
+            <a href="buka-kontak.html?lokasi=botania&judul=Botania A & B&grup=Pesona Asri" class="location-card">Botania</a>
+            <a href="buka-kontak.html?lokasi=arira&judul=Arira dan GKB&grup=Pesona Asri" class="location-card">Arira, GKB</a>
+            <a href="buka-kontak.html?lokasi=taras&judul=Taras&grup=Pesona Asri" class="location-card">Taras</a>
+            <a href="buka-kontak.html?lokasi=pesona_ab&judul=Pesona AB&grup=Pesona Asri" class="location-card">Pesona Asri Baru</a>
+            <a href="buka-kontak.html?lokasi=gardan&judul=Gardan Raya&grup=Pesona Asri" class="location-card">Gardan Raya</a>
+            <a href="buka-kontak.html?lokasi=rexvin&judul=Rexvin Village&grup=Pesona Asri" class="location-card">Rexvin Village</a>
+            <a href="buka-kontak.html?lokasi=graha&judul=Graha Nusa Permai&grup=Pesona Asri" class="location-card">Graha Nusa Permai</a>
+            <a href="buka-kontak.html?lokasi=taman&judul=Taman Anugrah Ideal&grup=Pesona Asri" class="location-card">Taman Anugrah Ideal</a>
         </div>
     </div>
 

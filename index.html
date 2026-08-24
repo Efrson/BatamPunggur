@@ -101,6 +101,47 @@
             <a href="simpang-raya.html" class="kdl-card">Simpang Raya</a>
         </div>
     </div>
+<!-- Modal Pengenalan Nama (Hanya muncul sekali di HP baru) -->
+    <div id="modalIdentitas" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9999; justify-content:center; align-items:center;">
+        <div style="background:white; padding:25px; border-radius:16px; width:90%; max-width:360px; text-align:center;">
+            <h3 style="margin-bottom:10px; font-size:18px;">Selamat Datang! 👋</h3>
+            <p style="font-size:14px; color:#64748B; margin-bottom:15px;">Silahkan masukkan nama saudara/i terlebih dahulu</p>
+            <input type="text" id="inputNamaUser" class="form-control" placeholder="Nama Saudara/i" style="margin-bottom:15px; width:100%; padding:12px; border:1px solid #E2E8F0; border-radius:8px;">
+            <button onclick="simpanIdentitasUser()" style="width:100%; background:#4F46E5; color:white; border:none; padding:12px; border-radius:8px; font-weight:700; cursor:pointer;">Simpan & Mulai</button>
+        </div>
+    </div>
 
+    <script>
+        // Cek apakah perangkat ini sudah punya nama dan ID
+        function cekIdentitasPerangkat() {
+            let savedName = localStorage.getItem("namaPetugas");
+            if (!savedName) {
+                document.getElementById('modalIdentitas').style.display = 'flex';
+            }
+        }
+
+        function simpanIdentitasUser() {
+            let namaInput = document.getElementById('inputNamaUser').value.trim();
+            if(!namaInput) {
+                alert("Mohon masukkan nama Anda!");
+                return;
+            }
+            
+            // Simpan Nama
+            localStorage.setItem("namaPetugas", namaInput);
+            
+            // Buat ID Perangkat Unik secara otomatis jika belum ada
+            if(!localStorage.getItem("deviceId")) {
+                let uniqueId = 'dev_' + Math.random().toString(36).substring(2, 10) + Date.now().toString(36);
+                localStorage.setItem("deviceId", uniqueId);
+            }
+
+            document.getElementById('modalIdentitas').style.display = 'none';
+            alert("Halo " + namaInput + ", perangkat Anda siap digunakan!");
+        }
+
+        // Jalankan saat halaman dibuka
+        cekIdentitasPerangkat();
+    </script>
 </body>
 </html>
