@@ -365,7 +365,7 @@
                                 <textarea class="form-control" rows="2" id="ket-${i}" placeholder="Ketik hasil panggilan..."></textarea>
                             </div>
 
-                            <button class="btn-save" onclick="simpanData(event, '${i}', '${nama.replace("[BARU] ", "").trim()}', '${lokasi}')">Simpan / Tambah Data Baru</button>
+                            <button class="btn-save" onclick="simpanData(event, '${i}', '${nama.replace(/\[BARU\] /g, '').replace(/"/g, '&quot;').replace(/'/g, '\\\'').trim()}', '${lokasi.replace(/"/g, '&quot;').replace(/'/g, '\\\'')}')">Simpan / Tambah Data Baru</button>
                         </div>
                     `;
                     container.appendChild(card);
