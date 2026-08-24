@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lokasi - Punggur</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4F46E5; 
+            --bg: #F8FAFC; 
+            --card-bg: #FFFFFF;
+            --text-main: #0F172A;
+            --text-muted: #64748B;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 480px; 
+            padding: 40px 20px;
+        }
+
+        .back-button {
+            display: inline-block;
+            text-decoration: none;
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .header {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            line-height: 1.3;
+            color: var(--text-main);
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 15px;
+            color: var(--text-muted);
+        }
+
+        .menu-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .location-card {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--card-bg);
+            padding: 18px 20px;
+            border-radius: 12px;
+            text-decoration: none;
+            color: var(--text-main);
+            font-weight: 600;
+            font-size: 16px;
+            box-shadow: 0 4px 10px rgba(15, 23, 42, 0.03);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            text-align: center;
+        }
+
+        .location-card:active {
+            transform: scale(0.98);
+            background-color: #F1F5F9;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <a href="index.html" class="back-button">← Kembali</a>
+
+        <div class="header">
+            <h1>Punggur</h1>
+            <p>Pilih perumahan / lokasi yang ingin dihubungi</p>
+        </div>
+
+        <div class="menu-list">
+            <a href="buka-kontak.html?lokasi=jasinta&judul=Jasinta&grup=Punggur" class="location-card">Jasinta</a>
+            <a href="buka-kontak.html?lokasi=punggur&judul=Punggur 1&grup=Punggur" class="location-card">Punggur</a>
+            <a href="buka-kontak.html?lokasi=bida kabil&judul=Bida Kabil&grup=Punggur" class="location-card">Bida Kabil</a>
+            <a href="buka-kontak.html?lokasi=punggur 2&judul=Punggur 2&grup=Punggur" class="location-card">Punggur 2</a>
+        </div>
+    </div>
+
+</body>
+</html>
