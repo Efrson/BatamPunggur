@@ -25,10 +25,22 @@
             font-size: 14px;
             cursor: pointer;
             width: 100%;
-            margin-bottom: 20px;
+            margin-bottom: 15px; /* Disesuaikan agar rapi dengan kotak pencarian */
             box-shadow: 0 4px 10px rgba(79, 70, 229, 0.2);
         }
         .btn-add-contact:active { transform: scale(0.98); }
+
+        /* --- STYLING KOTAK PENCARIAN (LIVE SEARCH) --- */
+        .search-wrapper { position: relative; margin-bottom: 20px; }
+        .search-icon { position: absolute; left: 14px; top: 12px; font-size: 16px; }
+        .search-input { 
+            width: 100%; padding: 12px 12px 12px 40px; border-radius: 10px; 
+            border: 1px solid var(--border); font-family: inherit; font-size: 14px; 
+            background-color: #FFFFFF; box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+            transition: all 0.2s ease;
+        }
+        .search-input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79,70,229,0.1); }
+        /* ------------------------------------------- */
 
         .contact-card { background-color: var(--card-bg); border-radius: 16px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid var(--border); }
         .card-header h2 { font-size: 18px; color: var(--text-main); margin-bottom: 5px; }
@@ -81,6 +93,12 @@
 
         <button class="btn-add-contact" onclick="bukaModal()">+ Tambah Kontak Baru</button>
 
+        <!-- FITUR PENCARIAN (LIVE SEARCH) -->
+        <div class="search-wrapper" id="kolom-pencarian" style="display: none;">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="input-cari" class="search-input" placeholder="Cari nama, blok, atau no HP..." oninput="filterKontak()">
+        </div>
+
         <div id="kontak-container"></div>
     </div>
 
@@ -126,6 +144,26 @@
         document.title = "Data Kontak - " + namaJudul;
         document.getElementById('judul-lokasi').textContent = "Lokasi: " + namaJudul;
         document.getElementById('sub-judul').textContent = "Daftar kontak wilayah " + namaJudul;
+
+        // --- FUNGSI LIVE SEARCH ---
+        function filterKontak() {
+            let input = document.getElementById('input-cari').value.toLowerCase();
+            let cards = document.getElementsByClassName('contact-card');
+
+            for (let i = 0; i < cards.length; i++) {
+                let nama = cards[i].querySelector('h2').innerText.toLowerCase();
+                let alamat = cards[i].querySelector('.address').innerText.toLowerCase();
+                let hp = cards[i].querySelector('.phone-number').innerText.toLowerCase();
+                
+                // Jika nama, alamat, atau nomor HP mengandung kata kunci yang diketik
+                if (nama.includes(input) || alamat.includes(input) || hp.includes(input)) {
+                    cards[i].style.display = "block";
+                } else {
+                    cards[i].style.display = "none";
+                }
+            }
+        }
+        // -------------------------
 
         function bukaModal() { 
             document.getElementById('modalBaru').style.display = 'flex'; 
@@ -207,7 +245,6 @@
                 let response = await fetch(URL_APPS_SCRIPT + "?grup=" + encodeURIComponent(namaGrup) + "&deviceId=" + encodeURIComponent(idPerangkat));
                 let data = await response.json();
 
-                // Pengecekan status blokir
                 if (data.status === "blocked") {
                     container.innerHTML = "<div style='text-align:center; padding:40px;'><h3 style='color:#EF4444; font-size:20px;'>🚫 Akses Ditolak</h3><p style='color:#64748B; margin-top:8px;'>Perangkat Anda tidak memiliki izin untuk mengakses data ini.</p></div>";
                     return;
@@ -272,6 +309,9 @@
                     return;
                 }
 
+                // Munculkan kotak pencarian jika data kontak berhasil dimuat dan jumlahnya lebih dari 0
+                document.getElementById('kolom-pencarian').style.display = "block";
+
                 for (let idx = 0; idx < semuaKontak.length; idx++) {
                     let item = semuaKontak[idx];
                     let lokasi = item.lokasi;
@@ -322,6 +362,10 @@
                         card.style.borderLeft = "6px solid #4F46E5"; 
                     }
 
+                    // FUNGSI PEMBERSIH KUTIP & APOSTROF UNTUK TOMBOL SIMPAN (Bulletproof)
+                    let namaAman = nama.replace(/\[BARU\] /g, "").replace(/"/g, '&quot;').replace(/'/g, '\\\'').trim();
+                    let lokasiAman = lokasi.replace(/"/g, '&quot;').replace(/'/g, '\\\'').trim();
+
                     card.innerHTML = `
                         <div class="card-header">
                             <span class="badge-lokasi">${lokasi}</span>
@@ -365,7 +409,8 @@
                                 <textarea class="form-control" rows="2" id="ket-${i}" placeholder="Ketik hasil panggilan..."></textarea>
                             </div>
 
-                            <button class="btn-save" onclick="simpanData(event, '${i}', '${nama.replace(/\[BARU\] /g, '').replace(/"/g, '&quot;').replace(/'/g, '\\\'').trim()}', '${lokasi.replace(/"/g, '&quot;').replace(/'/g, '\\\'')}')">Simpan / Tambah Data Baru</button>
+                            <!-- TOMBOL SIMPAN YANG SUDAH KEBAL TANDA KUTIP -->
+                            <button class="btn-save" onclick="simpanData(event, '${i}', '${namaAman}', '${lokasiAman}')">Simpan / Tambah Data Baru</button>
                         </div>
                     `;
                     container.appendChild(card);
