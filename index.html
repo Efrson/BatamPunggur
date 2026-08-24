@@ -100,8 +100,14 @@
             <a href="punggur.html" class="kdl-card">Punggur</a>
             <a href="simpang-raya.html" class="kdl-card">Simpang Raya</a>
         </div>
+
+        <!-- TOMBOL PANDUAN DI PALING BAWAH MENU -->
+        <div style="text-align: center; margin-top: 40px; margin-bottom: 20px;">
+            <a href="panduan.html" style="color: #4F46E5; font-size: 14px; text-decoration: underline; font-weight: 600;">Panduan Penggunaan</a>
+        </div>
     </div>
-<!-- Modal Pengenalan Nama (Hanya muncul sekali di HP baru) -->
+
+    <!-- Modal Pengenalan Nama (Hanya muncul sekali di HP baru) -->
     <div id="modalIdentitas" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9999; justify-content:center; align-items:center;">
         <div style="background:white; padding:25px; border-radius:16px; width:90%; max-width:360px; text-align:center;">
             <h3 style="margin-bottom:10px; font-size:18px;">Selamat Datang! 👋</h3>
@@ -143,31 +149,6 @@
         // Jalankan saat halaman dibuka
         cekIdentitasPerangkat();
     </script>
-    <!-- TOMBOL PANDUAN DI PALING BAWAH -->
-    <div style="text-align: center; margin-top: 40px; margin-bottom: 20px;">
-        <a href="#" onclick="bukaPanduan(event)" style="color: #4F46E5; font-size: 13px; text-decoration: underline; font-weight: 600;">Panduan Penggunaan</a>
-    </div>
 
-    <!-- MODAL POP-UP PANDUAN -->
-    <div id="modalPanduan" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center;">
-        <div style="background-color: white; padding: 25px; border-radius: 16px; width: 90%; max-width: 400px; position: relative;">
-            <button onclick="tutupPanduan()" style="position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 24px; cursor: pointer; color: #64748B;">&times;</button>
-            <h3 style="margin-bottom: 15px; font-size: 18px; color: #0F172A;">Panduan</h3>
-            <p style="font-size: 14px; color: #334155; line-height: 1.6; text-align: justify;">
-                Web ini dibuat sebagai kartu daerah digital untuk sidang Batam Punggur. Saudara-saudari dapat memilih KDL atau Perumahan, dan mulai menelepon. Setelah menelepon, sangat diharapkan untuk langsung menulis laporan agar memudahkan kunjungan berikutnya.
-            </p>
-            <button onclick="tutupPanduan()" style="width: 100%; background-color: #F1F5F9; color: #0F172A; border: none; padding: 12px; border-radius: 10px; font-weight: 600; cursor: pointer; margin-top: 20px;">Tutup</button>
-        </div>
-    </div>
-
-    <script>
-        function bukaPanduan(e) {
-            e.preventDefault(); // Mencegah layar lompat ke atas saat link diklik
-            document.getElementById('modalPanduan').style.display = 'flex';
-        }
-        function tutupPanduan() {
-            document.getElementById('modalPanduan').style.display = 'none';
-        }
-    </script>
 </body>
 </html>
